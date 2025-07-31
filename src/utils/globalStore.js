@@ -22,6 +22,11 @@ function saveMediaToStore(messageId, buffer, type, caption, deletedBy) {
     timestamp: Date.now()
   });
 }
+
+function getBotInstanceCount() {
+  return botInstances.size;
+}
+
 function getMediaFromStore(messageId) {
   return mediaStore.get(messageId);
 }
@@ -87,5 +92,6 @@ module.exports = {
   // Text
   saveTextToStore,
   getTextFromStore,
-  deleteTextFromStore
+  deleteTextFromStore,
+  getBotInstanceCount
 };

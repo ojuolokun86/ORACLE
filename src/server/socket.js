@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const { io: ioClient } = require('socket.io-client');
+const { getBotInstanceCount } = require('../utils/globalStore');
 
 let io;
 const clients = new Map(); // Map<socket.id, { authId, phoneNumber }>
@@ -24,7 +25,13 @@ function initializeSocket(server) {
 
   io.on('connection', (socket) => {
     //console.log('🔌 Socket.IO client connected:', socket.id);
-
+    function emitServerStatus() {
+      const load = getBotInstanceCount(); // Or however you track active sessions
+      if (lmSocket && lmSocket.connected) {
+        lmSocket.emit('status', { load });
+      }
+    }
+    
     // Expect client to send authId and phoneNumber after connecting
     socket.on('register-bot-session', ({ authId, phoneNumber }) => {
       clients.set(socket.id, { authId, phoneNumber });
