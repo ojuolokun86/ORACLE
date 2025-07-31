@@ -22,8 +22,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y imagemagick
             sudo pip3 install speedtest-cli
-            cd ~/
+            sudo apt install -y build-essential python3 g++ make
+            cd ~/ORACLE
             git pull origin main
             npm install @whiskeysockets/baileys@latest
             npm install
-            pm2 restart bmm-v2 || pm2 start index.js --name bmm-v2
+            pm2 restart oracle-v2 || pm2 start src/index.js --name oracle-v2
