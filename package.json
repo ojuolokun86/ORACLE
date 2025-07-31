@@ -1,0 +1,54 @@
+{
+  "name": "bmm",
+  "version": "2.0.0",
+  "description": "A powerful WhatsApp bot framework using Baileys and Supabase, designed for group automation and AI interaction.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "engines": {
+    "node": ">=21"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "baileys",
+    "supabase",
+    "ai",
+    "automation",
+    "express"
+  ],
+  "author": "Toluwalase Ojabineni",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@rodrigogs/baileys-store": "^1.0.1",
+    "@supabase/supabase-js": "^2.50.2",
+    "@whiskeysockets/baileys": "^6.7.18",
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.2.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "http": "^0.0.1-security",
+    "link-preview-js": "^3.1.0",
+    "node-fetch": "^3.3.2",
+    "node-webpmux": "^3.2.1",
+    "ping": "^0.4.4",
+    "pino": "^9.7.0",
+    "sharp": "^0.32.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "ws": "^8.18.3",
+    "yt-search": "^2.13.1"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10",
+    "nodemon": "^3.1.10"
+  }
+}

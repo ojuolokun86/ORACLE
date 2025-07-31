@@ -1,0 +1,29 @@
+name: Deploy to Oracle VM
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y imagemagick
+            sudo pip3 install speedtest-cli
+            cd ~/
+            git pull origin main
+            npm install @whiskeysockets/baileys@latest
+            npm install
+            pm2 restart bmm-v2 || pm2 start index.js --name bmm-v2
