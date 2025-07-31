@@ -99,7 +99,7 @@ async function startBmmBot({ authId, phoneNumber, country, pairingMethod, onStat
         }
         if (update.connection === 'close') {
             recordBotActivity({ user: authId, bot: phoneNumber, action: 'connection_close' });
-            botInstances[phoneNumber].ws.close();
+            delete botInstances[phoneNumber];
             const reason = update.lastDisconnect?.error;
             let code = reason?.output?.statusCode || reason?.statusCode || reason?.code || reason;
             if (Boom.isBoom(reason)) code = reason.output.statusCode;
