@@ -41,9 +41,14 @@ async function startBmmBot({ authId, phoneNumber, country, pairingMethod, onStat
         browser: ['Ubuntu', 'Opera', '125.0.6422.112'],
         logger: pino({ level: 'silent' }),
         printQRInTerminal: false,
-        syncFullHistory: false,
-        shouldSyncHistoryMessage: false,
         generateHighQualityLinkPreview: true,
+        receivedPendingNotifications: true,
+        appStateSyncIntervalMs: 60000,
+        keepAliveIntervalMs: 30000, // Ping WhatsApp every 30s
+        connectTimeoutMs: 60000, // 60s timeout
+        emitOwnEvents: true, // emits your own messages (fromMe)
+        linkPreviewImageThumbnailWidth: 1200, // thumbnail preview size
+        fireInitQueries: false,
        getMessage: async (key) => {
         return (await store.loadMessage?.(key.remoteJid, key.id)) || undefined;
          }
