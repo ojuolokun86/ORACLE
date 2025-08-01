@@ -44,6 +44,7 @@ const {
 } = require('./command/groupCommand');
 const pollCommand = require('./command/poll');
 const stickerCommand = require('./command/stikcer');
+const { checkIfAdmin } = require('./command/kick');
 
 
 
@@ -76,6 +77,28 @@ async function execute({ sock, msg, textMsg, phoneNumber }) {
     return; // allow only bot itself or owner in private mode
   }
 
+}
+if (mode === 'admin') {
+  const isGroup = from.endsWith('@g.us');
+  const isOwner = !!matchedOwner;
+  if (isGroup) {
+    // Only admins or owner can use bot in group
+    const isAdmin = await checkIfAdmin(sock, from, senderId);
+    if (!isAdmin && !isOwner) {
+      await sendToChat(sock, from, {
+        message: '❌ Only group admins can use the bot in admin mode.'
+      }, { quoted: msg });
+      return;
+    }
+  } else {
+    // Only owner in DM
+    if (!isOwner && !msg.key.fromMe) {
+      await sendToChat(sock, from, {
+        message: '❌ Only the bot owner can use the bot in admin mode (DM).'
+      }, { quoted: msg });
+      return;
+    }
+  }
 }
 
 

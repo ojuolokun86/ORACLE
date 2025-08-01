@@ -99,7 +99,6 @@ async function getSessionFromSupabase(authId, phoneNumber) {
       .eq('authId', authId)
       .eq('phoneNumber', phoneNumber)
       .single();
-  
     if (error || !data) throw new Error('Session not found in Supabase');
     return data;
   }

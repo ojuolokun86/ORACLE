@@ -283,4 +283,4 @@ async function kickCommand(sock, msg, command, args, from) {
     }
 }
 
-module.exports = { kickCommand };
+module.exports = { kickCommand , checkIfAdmin };

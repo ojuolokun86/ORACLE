@@ -4,7 +4,7 @@ const { getBotInstanceCount } = require('../utils/globalStore');
 
 let io;
 const clients = new Map(); // Map<socket.id, { authId, phoneNumber }>
-
+//const LM_URL =  'http://localhost:4000';
 const LM_URL = process.env.LM_URL || 'http://localhost:4000';
 const lmSocket = ioClient(LM_URL, {
   transports: ['websocket', 'polling'],
@@ -26,7 +26,8 @@ function initializeSocket(server) {
   io.on('connection', (socket) => {
     //console.log('🔌 Socket.IO client connected:', socket.id);
     function emitServerStatus() {
-      const load = getBotInstanceCount(); // Or however you track active sessions
+      const load = getBotInstanceCount();
+      console.log(load) // Or however you track active sessions
       if (lmSocket && lmSocket.connected) {
         lmSocket.emit('status', { load });
       }

@@ -7,6 +7,7 @@ const { handleStatusUpdate } = require('./features/statusView');
 const { incrementGroupUserStat } = require('./features/groupStats');
 
 async function handleIncomingMessage({ sock, msg, phoneNumber }) {
+  try {
   const message = msg?.message;
   const from = msg?.key?.remoteJid;
   const sender = msg?.key?.participant || msg?.key?.remoteJid;
@@ -15,6 +16,7 @@ async function handleIncomingMessage({ sock, msg, phoneNumber }) {
   const botId = sock.user.id.split(':')[0]?.split('@')[0];
   const botLid = sock.user.lid.split(':')[0]?.split('@')[0];
   const botPhoneNumber = botId && botLid;
+  console.log(`[MSG] User: ${sender} | Bot: ${botId} | Chat: ${from}`);  
   // Only increment for group messages with a participant
 if (msg.key?.remoteJid?.endsWith('@g.us') && msg.key?.participant) {
   const groupId = msg.key.remoteJid;
@@ -38,6 +40,13 @@ if (msg.key?.remoteJid?.endsWith('@g.us') && msg.key?.participant) {
     await execute({ sock, msg, textMsg, phoneNumber: botPhoneNumber });
   }
 }
-
+catch (err) {
+  console.error(`[ERROR] Message handler failed!`, {
+    error: err,
+    msg: msg,
+    botId: botId
+  });
+}
+}
 module.exports = handleIncomingMessage;
 
