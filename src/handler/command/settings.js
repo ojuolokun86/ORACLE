@@ -1,10 +1,18 @@
 const sendToChat = require('../../utils/sendToChat');
 const { getUserSettings } = require('../../utils/settings');
-
+const { isBotOwner } = require('../../database/database');
 module.exports = async function settingsCommand(sock, msg) {
   const from = msg.key.remoteJid;
+  const sender = msg.key.participant || msg.key.remoteJid;
   const botId = sock.user?.id?.split(':')[0]?.split('@')[0];
-
+  const botLid = sock.user?.lid?.split(':')[0]?.split('@')[0];
+  const senderId = sender?.split('@')[0];
+  const name = sock.user?.name;
+  if (!msg.key.fromMe && !isBotOwner(senderId, botId, botLid)) {
+    return await sendToChat(sock, from, {
+      message: `❌ Only *${name}* can view this bot settings.`
+    });
+  }
   const settings = getUserSettings(botId, from); // botId = user_id, from = groupId
   const antilink = settings.antilink || {};
   const antidelete = settings.antidelete || {};

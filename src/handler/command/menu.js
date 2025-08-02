@@ -132,6 +132,7 @@ const getMainMenu = (prefix = '.', ownerName = 'Unknown', mode = 'private', phon
 ┃◈ 📤 view **46**
 ┃◈ 👥 online **47**
 ┃◈ 🧑‍🎨 setprofile **48**
+┃◈ 📣 report **49**
 ╰━━━━━━━━━━━━━━━━━━━━━━━┈⊷
 
 📩 *Reply with a number or command name to run it.*

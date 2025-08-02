@@ -5,11 +5,14 @@ const  handleIncomingForAntidelete = require('../handler/features/saveAntidelete
 const handleDeletedMessage  = require('./features/antideleteListener');
 const { handleStatusUpdate } = require('./features/statusView');
 const { incrementGroupUserStat } = require('./features/groupStats');
-
+const globalStore = require('../utils/globalStore');
+const sendToChat = require('../utils/sendToChat');
 async function handleIncomingMessage({ sock, msg, phoneNumber }) {
+  let from;
+  let botId; 
   try {
   const message = msg?.message;
-  const from = msg?.key?.remoteJid;
+  from = msg?.key?.remoteJid;
   const sender = msg?.key?.participant || msg?.key?.remoteJid;
   const receivedFrom = msg?.key?.fromMe ? phoneNumber : from;
   const textMsg = message?.conversation || message?.extendedTextMessage?.text || '';
@@ -32,8 +35,10 @@ if (msg.key?.remoteJid?.endsWith('@g.us') && msg.key?.participant) {
   await handleIncomingForAntidelete(sock, msg);
   await handleStatusUpdate(sock, msg, botId); // Handle status updates
   if (await detectAndAct({ sock, from, msg, textMsg })) return;
-   const presenceType = 'available';
-   await sock.sendPresenceUpdate(presenceType, from);
+  const presenceType =
+  (globalStore.presenceTypeStore[botId] && globalStore.presenceTypeStore[botId]) ||
+  'composing';
+  await sock.sendPresenceUpdate(presenceType, from);
   // ⚙️ Check for command
   const userPrefix = await getUserPrefix(botId);
   if (textMsg.startsWith(userPrefix)) {
@@ -41,6 +46,9 @@ if (msg.key?.remoteJid?.endsWith('@g.us') && msg.key?.participant) {
   }
 }
 catch (err) {
+  await sendToChat(sock, from, {
+    message: '❌ Message handler error: ' + err + 'Please use report command with the error message to report this issue.'
+  });
   console.error(`[ERROR] Message handler failed!`, {
     error: err,
     msg: msg,

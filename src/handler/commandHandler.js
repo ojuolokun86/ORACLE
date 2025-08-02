@@ -45,6 +45,8 @@ const {
 const pollCommand = require('./command/poll');
 const stickerCommand = require('./command/stikcer');
 const { checkIfAdmin } = require('./command/kick');
+const report = require('./command/report');
+
 
 
 
@@ -55,8 +57,9 @@ function getMatchedOwner(senderId, senderLid, botId, botLid) {
 }
 
 async function execute({ sock, msg, textMsg, phoneNumber }) {
+  let from;
   try{
-  const from = msg.key.remoteJid;
+  from = msg.key.remoteJid;
   const jid = msg.key.fromMe ? msg.key.remoteJid : msg.key.participant || msg.key.remoteJid;
   const senderId = jid.split(':')[0].split('@')[0];
   const senderLid = jid.includes(':') ? jid.split(':')[1] : undefined;
@@ -86,16 +89,16 @@ if (mode === 'admin') {
     const isAdmin = await checkIfAdmin(sock, from, senderId);
     if (!isAdmin && !isOwner) {
       await sendToChat(sock, from, {
-        message: '❌ Only group admins can use the bot in admin mode.'
+        message: '❌ Command are restricted to group admins or owner.'
       }, { quoted: msg });
       return;
     }
   } else {
     // Only owner in DM
     if (!isOwner && !msg.key.fromMe) {
-      await sendToChat(sock, from, {
-        message: '❌ Only the bot owner can use the bot in admin mode (DM).'
-      }, { quoted: msg });
+      // await sendToChat(sock, from, {
+      //   message: '❌ Only the bot owner can use the bot in admin mode (DM).'
+      // }, { quoted: msg });
       return;
     }
   }
@@ -264,6 +267,9 @@ if (mode === 'admin') {
       break;
     case 'listinactive':
       await handleListInactiveCommand(sock, from);
+      break;
+    case 'report':
+      await report.execute({ sock, msg, textMsg, args });
       break;
     default:
       await sendToChat(sock, from, {

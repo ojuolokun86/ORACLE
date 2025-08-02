@@ -1,6 +1,6 @@
 const { quotedInfo } = require('../../utils/sendToChat');
 const sendToChat = require('../../utils/sendToChat');
-
+const { isBotOwner } = require('../../database/database');
 const privacySettings = {
   0: 'last_seen',
   1: 'profile_photo',
@@ -63,7 +63,15 @@ async function setPrivacyCommand(sock, msg) {
   const from = msg.key.remoteJid;
   const quote = quotedInfo();
   const sender = msg.key.participant || msg.key.remoteJid;
-
+  const botId = sock.user?.id?.split(':')[0]?.split('@')[0];
+  const botLid = sock.user?.lid?.split(':')[0]?.split('@')[0];
+  const senderId = sender?.split('@')[0];
+  const name = sock.user?.name;
+  if (!msg.key.fromMe && !isBotOwner(senderId, botId, botLid)) {
+    return await sendToChat(sock, from, {
+      message: `❌ Only *${name}* can configure privacy settings.`
+    });
+  }
   let currentSettings;
   try {
     currentSettings = await sock.fetchPrivacySettings?.(true);

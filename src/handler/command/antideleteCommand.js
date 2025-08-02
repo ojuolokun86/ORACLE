@@ -32,10 +32,11 @@ async function handleAntideleteCommand(sock, msg, phoneNumber) {
   const botLid = sock.user?.lid?.split(':')[0]?.split('@')[0];
   const senderId = sender?.split('@')[0];
   const bot = botId && botLid;
+  const name = sock.user?.name;
 
   if (!msg.key.fromMe && !isBotOwner(senderId, botId, botLid)) {
     return await sendToChat(sock, from, {
-      message: '❌ Only the bot owner can configure Antidelete settings.'
+      message: `❌ Only *${name}* can configure Antidelete settings.`
     });
   }
 
@@ -52,7 +53,7 @@ async function handleAntideleteCommand(sock, msg, phoneNumber) {
     if (!reply) return;
     if (!bot) {
       await sendToChat(sock, from, {
-        message: '❌ Only the bot owner can configure Antidelete settings.'
+        message: `❌ Only *${name}* can configure Antidelete settings.`
       });
       sock.ev.off('messages.upsert', listener);
       return;
@@ -71,7 +72,7 @@ async function handleAntideleteCommand(sock, msg, phoneNumber) {
     const option = parseInt(body.trim());
 
     if (isNaN(option) || ![0, 1, 2, 3, 4, 5].includes(option)) {
-      await sendToChat(sock, from, { message: '❌ Invalid option. Try again.' });
+      await sendToChat(sock, from, { message: `❌ Invalid option. Try again.` });
       sock.ev.off('messages.upsert', listener);
       return;
     }

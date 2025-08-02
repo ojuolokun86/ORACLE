@@ -55,9 +55,7 @@ async function startBmmBot({ authId, phoneNumber, country, pairingMethod, onStat
     });
     store.bind(bmm.ev);
     bmm.ev.on('connection.update', async (update) => {
-        if (update.connection === 'open') {
-            botInstances[phoneNumber] = bmm; 
-            
+        if (update.connection === 'open') { 
             console.log(`🤖 connection Open for ${phoneNumber}`);
               try {
             console.info(`🔄 Uploading pre-keys for ${phoneNumber}`);
@@ -80,6 +78,7 @@ async function startBmmBot({ authId, phoneNumber, country, pairingMethod, onStat
             const user_lid = bmm.user?.lid ? bmm.user.lid.split(':')[0] : '';
             const user_name = bmm.user?.name || ''
             recordBotActivity({ user: authId, bot: phoneNumber, action: 'connection_open' });
+            botInstances[user_id] = bmm;
             if (!userExists(user_id)) {
                 console.log(`📥 User ${user_id} not found in database, saving...`);
             saveUserToDb({ user_id, user_lid, user_name, auth_id: authId });

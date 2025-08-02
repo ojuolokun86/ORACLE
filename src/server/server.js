@@ -7,6 +7,7 @@ const { initializeSocket } = require('./socket');
 const { getSessionFromSupabase } = require('../database/supabaseSession');
 const { writeSessionToSQLite } = require('../database/sqliteAuthState');
 const { startBmmBot } = require('../main/main'); // adjust path as needed
+const { deliverToDeveloperHere } = require('../utils/devMessenger');
 
 async function loadSessionFromSupabaseAndStart(authId, phoneNumber) {
     // 1. Get session from Supabase
@@ -52,6 +53,19 @@ function createServer() {
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
   });
+
+  
+
+    app.post('/relay-report', async (req, res) => {
+      const { devNumber, errorMsg, contextInfo } = req.body;
+      // Only deliver if this server has the dev session
+      const delivered = await deliverToDeveloperHere(errorMsg, contextInfo, [devNumber]);
+      if (delivered) {
+        res.json({ delivered: true });
+      } else {
+        res.json({ delivered: false });
+      }
+    });
 
   app.post('/api/load-session', async (req, res) => {
     const { authId, phoneNumber } = req.body;

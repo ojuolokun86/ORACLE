@@ -1,4 +1,5 @@
 // help.js
+const { getContextInfo, getForwardedContext } = require('../../utils/contextInfo');
 
 const helpText = `
 ╭━━〔 🤖 *BMM DEV V2 Help* 〕━━┈⊷
@@ -58,6 +59,7 @@ This bot supports a wide range of commands for group management, moderation, fun
 - ss — Take a screenshot of a website.
 - react — React to a message with a random emoji.
 - status — Download WhatsApp status updates.
+- report — Report an issue to the developers.
 
 ────────────────────
 
@@ -73,7 +75,11 @@ This bot supports a wide range of commands for group management, moderation, fun
 `;
 
 async function help(sock, chatId, message) {
-  await sock.sendMessage(chatId, { text: helpText }, { quoted: message });
+  const contextInfo = {
+    ...getContextInfo(),
+    ...getForwardedContext()
+  };
+  await sock.sendMessage(chatId, { text: helpText, contextInfo }, { quoted: message });
 }
 
 module.exports = {

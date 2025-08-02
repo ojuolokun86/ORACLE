@@ -1,6 +1,7 @@
 const { downloadMediaMessage } = require('@whiskeysockets/baileys');
 const { quotedInfo } = require('../../utils/sendToChat');
 const sendToChat = require('../../utils/sendToChat');
+const { isBotOwner } = require('../../database/database');
 
 const botPrivacyOptions = {
   0: 'Set Bot Name',
@@ -25,6 +26,15 @@ async function setBotPrivacyCommand(sock, msg) {
   const from = msg.key.remoteJid;
   const sender = msg.key.participant || msg.key.remoteJid;
   const quote = quotedInfo();
+  const botId = sock.user?.id?.split(':')[0]?.split('@')[0];
+  const botLid = sock.user?.lid?.split(':')[0]?.split('@')[0];
+  const bot = botId && botLid;
+  const senderId = sender?.split('@')[0];
+  if (!msg.key.fromMe && !isBotOwner(senderId, botId, botLid)) {
+    return await sendToChat(sock, from, {
+      message: '❌ Only the bot owner can configure bot privacy settings.'
+    });
+  }
 
   const sentMenu = await sock.sendMessage(from, { text: botMenu }, { quoted: quote });
   const menuMsgId = sentMenu.key.id;
@@ -32,6 +42,13 @@ async function setBotPrivacyCommand(sock, msg) {
   const firstListener = async ({ messages }) => {
     const reply = messages?.[0];
     if (!reply) return;
+    if (!bot && !isBotOwner(senderId, botId, botLid)) {
+          await sendToChat(sock, from, {
+            message: '❌ Only the bot owner can configure bot privacy settings.'
+          });
+          sock.ev.off('messages.upsert', firstListener);
+          return;
+        }
 
     const replyFrom = reply.key.remoteJid;
     const replySender = reply.key.participant || reply.key.remoteJid;

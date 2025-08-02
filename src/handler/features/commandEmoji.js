@@ -51,7 +51,8 @@ const commandEmojis = {
   sticker: '🖼️',
   stimage: '🖼️',
   stgif: '🖼️',
-  ss: '🌐'
+  ss: '🌐',
+  report: '📣'
 };
 
 const randomEmojis = ['🤖', '✨', '🎲', '🚀', '💡', '🎯', '🧠', '🎉', '⚙️', '💥'];

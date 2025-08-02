@@ -1,5 +1,6 @@
 const sendToChat = require('../../utils/sendToChat');
 const { quotedInfo } = require('../../utils/sendToChat');
+const { isBotOwner } = require('../../database/database');
 
 const disappearingOptions = {
   0: 0,         // Off
@@ -21,6 +22,15 @@ async function setDisappearingCommand(sock, msg) {
   const from = msg.key.remoteJid;
   const sender = msg.key.participant || msg.key.remoteJid;
   const quote = quotedInfo();
+  const botId = sock.user?.id?.split(':')[0]?.split('@')[0];
+  const botLid = sock.user?.lid?.split(':')[0]?.split('@')[0];
+  const senderId = sender?.split('@')[0];
+  const name = sock.user?.name;
+  if (!msg.key.fromMe && !isBotOwner(senderId, botId, botLid)) {
+    return await sendToChat(sock, from, {
+      message: `❌ Only *${name}* can configure Disappearing settings.`
+    });
+  }
 
   const sentMenu = await sock.sendMessage(from, { text: disappearingMenu }, { quoted: quote });
   const menuMsgId = sentMenu.key.id;
