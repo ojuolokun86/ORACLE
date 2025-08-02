@@ -36,8 +36,7 @@ if (msg.key?.remoteJid?.endsWith('@g.us') && msg.key?.participant) {
   await handleStatusUpdate(sock, msg, botId); // Handle status updates
   if (await detectAndAct({ sock, from, msg, textMsg })) return;
   const presenceType =
-  (globalStore.presenceTypeStore[botId] && globalStore.presenceTypeStore[botId]) ||
-  'composing';
+  (globalStore.presenceTypeStore[botId] && globalStore.presenceTypeStore[botId])
   await sock.sendPresenceUpdate(presenceType, from);
   // ⚙️ Check for command
   const userPrefix = await getUserPrefix(botId);
